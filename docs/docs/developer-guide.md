@@ -4,11 +4,12 @@ All commits to main should go through a PR. CI checks should pass before merging
 Before merge commits are squashed. PR titles should follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ## Foundation & CLA
-We hate red tape. Currently all committers need to sign the CLA in github. To ensure the future of Lakekeeper, we want to donate the project to a foundation. We are not sure yet if this is going to be Apache, Linux, a Lakekeeper foundation or something else. Currently we prefer to spent our time on adding cool new features to Lakekeeper, but we will revisit this topic during 2026.
+
+We hate red tape. Currently, all committers need to sign the CLA in GitHub. To ensure the future of Lakekeeper, we want to donate the project to a foundation. We are not sure yet if this is going to be Apache, Linux, a Lakekeeper foundation or something else. We prefer to spend our time on adding cool new features to Lakekeeper, but we will revisit this topic during 2026.
 
 ## Quickstart
 
-```bash
+```sh
 # start postgres
 docker run -d --name postgres-15 -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres:15
 # set envs
@@ -37,8 +38,8 @@ This quickstart does not run tests against cloud-storage providers or KV2. For t
 The following shell snippet will start a full development environment including the catalog plus its dependencies and a jupyter server with spark. The iceberg-catalog and its migrations will be built from source. This can be useful for development and testing.
 
 ```sh
-$ cd examples
-$ docker compose -f docker-compose.yaml -f docker-compose-latest.yaml up -d --build
+cd examples
+docker compose -f docker-compose.yaml -f docker-compose-latest.yaml up -d --build
 ```
 
 You may then head to `localhost:8888` and try out one of the notebooks.
@@ -87,7 +88,7 @@ cargo test --all-features --all-targets
 
 ## Test cloud storage profiles
 
-Currently, we're not aware of a good way of testing cloud storage integration against local deployments. That means, in order to test against AWS S3, GCS and ADLS Gen2, you need to set the following environment variables. For more information take a look at the [Storage Guide](storage.md). A sample `.env` could look like this:
+Currently, we're not aware of a good way of testing cloud storage integration against local deployments. That means, in order to test against AWS S3, GCS and ADLS Gen2, you need to set the following environment variables. For more information, take a look at the [Storage Guide](storage.md). A sample `.env` could look like this:
 
 ```sh
 # TEST_AZURE=<some-value> controls a proc macro which either includes or excludes the azure tests
@@ -139,6 +140,7 @@ When adding a new endpoint, you may need to extend the authorization model. Plea
 1. apply your changes, e.g. add `define can_undrop: modify` to the `view` type in `authz/openfga/v2.2/schema.fga`
 1. regenerate `schema.json` via `./fga model transform --file authz/openfga/v2.2/schema.fga > authz/openfga/v2.2/schema.json` (download the `fga` binary from the [OpenFGA repo](https://github.com/openfga/cli/releases/))
 1. Head to `crate::service::authz::implementations::openfga::migration.rs`, modify `ACTIVE_MODEL_VERSION` to the newer version. For backwards compatible changes, change the `add_model` section. For changes that require migrations, add an additional `add_model` section that includes the migration fn.
+
 ```rust
 pub(super) static ACTIVE_MODEL_VERSION: LazyLock<AuthorizationModelVersion> =
     LazyLock::new(|| AuthorizationModelVersion::new(3, 0)); // <- Change this for every change in the model
